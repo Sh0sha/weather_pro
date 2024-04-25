@@ -19,22 +19,20 @@ class _WeatherScreenState extends State<WeatherScreen> {
   late List<WeatherForecast> prognozData = [];
   final List<Map<String, String>> cities = [
     {'name': 'Moscow', 'code': 'Moscow'},
-    {'name': 'Kazan', 'code': 'Kazan'},
-    {'name': 'Surgut','code': 'Surgut'},
     {'name': 'London', 'code': 'London'},
-    {'name': 'Paris', 'code': 'Paris'},
     {'name': 'Tokyo', 'code': 'Tokyo'},
     {'name': 'Miami','code':'Miami'}
   ];
   Map<String, dynamic>? weatherData;
+
   @override
   void initState() {
     super.initState();
-    fetchWeatherData();
-    fetchForecastData();
+    getDataWeather();
+    getPrognosData();
   }
-
-  Future<void> fetchWeatherData() async {
+/// получаем данные о погоде
+  Future<void> getDataWeather() async {
     final url = 'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric';
     final response = await http.get(Uri.parse(url));
 
@@ -53,9 +51,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
   }
 
-  Future<void> fetchForecastData() async {
+  Future<void> getPrognosData() async {
     final url ='https://api.openweathermap.org/data/2.5/forecast?q=$city&appid=$apiKey&units=metric';
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url));// выполнение get запроса к апи погоды
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -72,27 +70,35 @@ class _WeatherScreenState extends State<WeatherScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title:  Text('Прогноз погоды'),
-          backgroundColor: Colors.orange[300],
-          elevation: 5,
-          bottom: TabBar(   // настройка нижней части верхней шапки
-            labelColor: Colors.white,
-            indicatorColor: Colors.black54,
-            tabs: [
-              Tab(text: 'Сейчас'),
-              Tab(text: 'Ближайшие дни'),
-            ],
+          title:  TextField(
+            onChanged: (value) {
+              city = value;
+            },
+            decoration: InputDecoration(
+
+              hintText: 'введите город',
+            ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                getDataWeather();     // вызываю методы при нажати на поиск
+                getPrognosData();
+              },
+            ),
+          ],
         ),
         body:
 
-        TabBarView(// что на вкладках будет (по порядку)
+        TabBarView(
           children: [
             CurrentWeather(
 
@@ -108,9 +114,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
 
           ],
         ),
-        drawer: Drawer(     // боковая менюшка слева
+        drawer: Drawer(
           elevation: 5,
-          width: 200,
+          width: 250,
           backgroundColor: Colors.orange[200],
           child: ListView(
             padding: EdgeInsets.zero,
@@ -119,14 +125,14 @@ class _WeatherScreenState extends State<WeatherScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Иконка состояния погоды
+                  // ииконка состояния погоды
                   weatherData != null
                       ? Image.network(
                     'https://openweathermap.org/img/w/${weatherData!['weather'][0]['icon']}.png',
                     width: 60,
                     height: 50,
                   )
-                      : SizedBox(), // Пустой контейнер, если данные о погоде не загружены
+                      : SizedBox(),
                   SizedBox(width:10),
                   Text(
                     city,
@@ -134,16 +140,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   ),
                 ],
               ),
-              for (var item in cities) // проходимся циклом и выводим города
+              for (var item in cities)
                 ListTile(
-
                   title: Text(item['name']!),
                   onTap: () {
                     setState(() {
                       city = item['code']!;
                     });
-                    fetchWeatherData();
-                    fetchForecastData();
+                    getDataWeather();
+                    getPrognosData();
                     Navigator.pop(context);
                   },
                 ),

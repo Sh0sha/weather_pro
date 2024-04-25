@@ -23,14 +23,14 @@ class CurrentWeather extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
 
-        SizedBox(height: 80,),
+
         Icon(
           getWeatherIcon(weatherStatus),
           size: 70,
           color: Colors.orangeAccent[100],// Цвет иконки
 
         ),
-        SizedBox(height: 20,),
+
         TextLiquidFill(
           waveDuration: Duration(milliseconds: 1000),
           loadDuration: Duration(milliseconds: 2700),
@@ -39,14 +39,14 @@ class CurrentWeather extends StatelessWidget {
           waveColor: Colors.orangeAccent,
           boxBackgroundColor: Colors.white,
           textStyle: TextStyle(
-            fontSize: 100.0,
+            fontSize: 70.0,
             fontWeight: FontWeight.w400,
           ),
           boxHeight: 200.0,
         ),
          // Пробел между названием города и иконкой
 
-        SizedBox(height: 20), // Пробел между иконкой и информацией о погоде
+       // Пробел между иконкой и информацией о погоде
         Text(
           'Состояние: $weatherStatus',
           style: TextStyle(fontWeight: FontWeight.w300, fontSize: 30,color: Colors.blueGrey[600]),
@@ -56,12 +56,12 @@ class CurrentWeather extends StatelessWidget {
           'Температура: $temperature °C',
           style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20,color: Colors.blueGrey[600]),
         ),
-        SizedBox(height: 20),
+
         Text(
           'Скорость ветра: $windSpeed м/с',
           style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20,color: Colors.blueGrey[600]),
         ),
-        SizedBox(height: 20),
+
         Text(
           'Влажность: $humidity %',
           style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20,color: Colors.blueGrey[600]),
